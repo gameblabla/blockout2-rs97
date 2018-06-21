@@ -234,9 +234,10 @@ void PageControls::ProcessAnimation(float fTime) {
 
 void PageControls::ProcessEdit(BYTE *keys) {
 
-  if( keys[SDLK_ESCAPE] ) {
+  if( keys[SDLK_ESCAPE] || keys[SDLK_e] ) {
     editMode = false;
     keys[SDLK_ESCAPE] = 0;
+    keys[SDLK_e] = 0;
   }
 
   // Search key
@@ -484,22 +485,13 @@ int PageControls::Create(int width,int height) {
   float pitW = (float)width  * 0.5625f;
   float pitH = (float)height * 0.25f;
 
-#ifndef PLATFORM_PSP
   if( !pitBack.RestoreDeviceObjects(STR("images/menupit.png"),STR("none"),width,height) )
-#else
-  if( !pitBack.RestoreDeviceObjects(STR("images.psp/menupit.png"),STR("none"),width,height) )
-#endif
+
     return GL_FAIL;
 
-#ifndef PLATFORM_PSVITA
-  pitBack.UpdateSprite(fround(pitX),fround(pitY),
-                       fround(pitX+pitW),fround(pitY+pitH),
-                       0.0f,0.0f,1.0f,0.337f);
-#else
   pitBack.UpdateSprite(pitX,pitY,
                        pitX+pitW,pitY+pitH,
                        0.0f,0.0f,1.0f,0.337f);
-#endif
 
   // Emulate pit 9*3*12
   cubeSide = 1.0f/9.0f;

@@ -17,9 +17,8 @@
 
 #include "MenuGrid.h"
 
-#ifdef PLATFORM_PSVITA
 extern int DisableCubeTitle;
-#endif
+
 
 // ----------------------------------------------------------------
 
@@ -366,12 +365,13 @@ int MenuGrid::CreateCube() {
 
 // ----------------------------------------------------------------
 
+//Gameblabla
 void MenuGrid::RenderCube(int x,int y) {
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glEnable(GL_LIGHTING);
-  glTranslatef(x*cSide - cSide/2.0f,y*cSide,0.0f);
+  glTranslatef(x*cSide - cSide/2.0f + 0.1f,(y*cSide)+0.3f,2.0f);
 
   // Draw faces
   GLApplication::SetMaterial(&blueMaterial);
@@ -426,24 +426,24 @@ void MenuGrid::Render() {
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_LIGHTING);
   glDisable(GL_TEXTURE_2D);
-  glLineWidth(1.0f);
+  //glLineWidth(1.0f);
 
   GLApplication::SetMaterial(&gridMaterial);
   glCallList(gridList);
 
   // Render cubes
-#ifdef PLATFORM_PSVITA
   if (!DisableCubeTitle)
-#endif
-  for(int i=0;i<GRID_WIDTH*GRID_HEIGHT;i++) {
-    int x = orderMatrix[i].x;
-    int y = orderMatrix[i].y;
-    glPushMatrix();
-    if( matrix[x + GRID_WIDTH*y] ) {
-      RenderCube(x,y);
-    }
-    glPopMatrix();
-  }
+  {
+	  for(int i=0;i<GRID_WIDTH*GRID_HEIGHT;i++) {
+		int x = orderMatrix[i].x;
+		int y = orderMatrix[i].y;
+		glPushMatrix();
+		if( matrix[x + GRID_WIDTH*y] ) {
+		  RenderCube(x,y);
+		}
+		glPopMatrix();
+	  }
+	}
 
 }
 

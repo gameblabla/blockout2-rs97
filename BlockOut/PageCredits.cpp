@@ -46,10 +46,11 @@ void PageCredits::Render() {
 
 int PageCredits::Process(BYTE *keys,float fTime) {
 
-  if( keys[SDLK_ESCAPE] ) {
+  if( keys[SDLK_ESCAPE] || keys[SDLK_e]) {
     mParent->GetSound()->StopMusic();
     mParent->ToPage(&mParent->mainMenuPage);
     keys[SDLK_ESCAPE] = 0;
+    keys[SDLK_e] = 0;
   }
 
   if(startTime==0.0f)

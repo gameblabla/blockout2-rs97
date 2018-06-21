@@ -117,9 +117,10 @@ int PageHttp::Process(BYTE *keys,float fTime) {
       keys[SDLK_RETURN] = 0;
     }
 
-    if( keys[SDLK_ESCAPE] ) {
+    if( keys[SDLK_ESCAPE] || keys[SDLK_e] ) {
        mParent->ToPage(&mParent->optionsPage);
        keys[SDLK_ESCAPE] = 0;
+       keys[SDLK_e] = 0;
     }
 
     if( keys[SDLK_LEFT] || keys[SDLK_RIGHT] ) {

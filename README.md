@@ -1,3 +1,12 @@
+BlockOut II for the RS-97
+
+Here's a port of Blockout II using TinyGL (with some code from TinyGL.js) based on the PS Virta port.
+The game runs well for the most part, although you don't get the border around the screen (due to graphical glitces).
+
+
+============
+
+
 # BlockOut II for Playstation Vita
 
 This is a Sony Playstation Vita port of BlockOut II game by Jean-Luc PONS.

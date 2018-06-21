@@ -96,10 +96,11 @@ int Menu::Process(BYTE *keys,float fTime) {
   } else {
 
     // Fast animation ending
-    if( keys[SDLK_ESCAPE] ) {
+    if( keys[SDLK_ESCAPE] || keys[SDLK_e] ) {
       startMenuTime = fTime - (ANIMTIME + BLLETTER_NB*0.25f);
       menuEscaped = TRUE;
       keys[SDLK_ESCAPE] = 0;
+      keys[SDLK_e] = 0;
     }
 
   }

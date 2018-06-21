@@ -2,13 +2,7 @@
 // 3x3 Matrix class
 // -------------------------------------
 
-#if defined(PLATFORM_PSP)
-#include "SDL/SDL_opengl.h"
-#elif defined(PLATFORM_PSVITA)
 #include "GL/gl.h"
-#else
-#include <SDL_opengl.h>
-#endif
 
 #ifndef _GLMATRIXH_
 #define _GLMATRIXH_

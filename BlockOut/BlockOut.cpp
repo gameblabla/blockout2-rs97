@@ -23,30 +23,9 @@
 extern void InitialiseWinsock();
 #endif
 
-#ifdef PLATFORM_PSVITA
-#define SCREEN_WIDTH   960
-#define SCREEN_HEIGHT  544
-
-#include "SDL/SDL.h"
-
-enum psvita_buttons {
-        TRIANGLE = 0,
-        CIRCLE = 1,
-        CROSS = 2,
-        SQUARE = 3,
-        LEFT_TRIGGER = 4,
-        RIGHT_TRIGGER = 5,
-        DOWN = 6,
-        LEFT = 7,
-        UP = 8,
-        RIGHT = 9,
-        SELECT = 10,
-        START = 11,
-        HOME = 12
-};
 
 int DisableCubeTitle = 0;
-#endif
+
 
 #ifdef PLATFORM_PSP
 #include "sys/unistd.h"
@@ -150,62 +129,24 @@ extern "C" void __cxa_pure_virtual() { while(1); }
 // Desc: Entry point to the program. Initializes everything, and goes into a
 //       message-processing loop. Idle time is used to render the scene.
 //-----------------------------------------------------------------------------
-#ifdef WINDOWS
-int WINAPI WinMain(HINSTANCE hInstance,
-                   HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine,
-                   int nCmdShow)
-#else
+
 #ifdef __cplusplus
     extern "C"
 #endif
 int main(int argc,char *argv[])
-#endif
 {
-#ifdef PLATFORM_PSP
-  setup_callbacks();
-#endif
-
-#ifdef PLATFORM_PSVITA
-  #ifdef PSVITA_DEBUG
-    psp2shell_init(3333, 0);
-    sceKernelDelayThread(2*1000000);
-  #endif
-#endif
-
   // Check environement
-  if( !CheckEnv() ) {
-    return 0;
-  }
+	if( !CheckEnv() ) {
+		return 0;
+	}
+	// Create and start the application
+	BlockOut* glApp = new BlockOut();
+	vglInit(glApp->theSetup.GetWindowWidth(), glApp->theSetup.GetWindowHeight());
+	glApp->Create(glApp->theSetup.GetWindowWidth(), glApp->theSetup.GetWindowHeight(),0,0);
+	int result = glApp->Run();
+	delete glApp;
 
-#ifdef WINDOWS
-  InitialiseWinsock();
-#endif
-
-  // Create and start the application
-  BlockOut *glApp = new BlockOut();
-
-#if defined(PLATFORM_PSP) || defined(PLATFORM_PSVITA)
-
-  if (!glApp->Create(SCREEN_WIDTH,
-          SCREEN_HEIGHT,
-          TRUE,
-          FALSE)) {
-
-          delete glApp;
-          return 0;
-  }
-#else
-  if (!glApp->Create(glApp->theSetup.GetWindowWidth(),
-	  glApp->theSetup.GetWindowHeight(),
-	  glApp->theSetup.GetFullScreen(),
-	  glApp->theSetup.GetFrLimiter() == FR_LIMITVSYNC)) {
-	  delete glApp;
-	  return 0;
-  }
-#endif
-
-  return glApp->Run();
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -255,19 +196,10 @@ int BlockOut::UpdateFullScreen()
 //-----------------------------------------------------------------------------
 int BlockOut::FrameMove()
 {
-
-  // General keys
-
-  if( m_bKey[SDLK_F1] ) {
-    BOOL fs = theSetup.GetFullScreen();
-    theSetup.SetFullScreen(!fs);
-    UpdateFullScreen();
-    m_bKey[SDLK_F1]=0;
-  }
-
   // Processing
   int retValue;
-  switch(mode) {
+  switch(mode) 
+  {
     case MENU_MODE:
       retValue = theMenu.Process(m_bKey,m_fTime);
       switch( retValue ) {
@@ -292,23 +224,7 @@ int BlockOut::FrameMove()
           break;
         case 100: // Exit
           InvalidateDeviceObjects();
-
-#if defined(PLATFORM_PSP)
-          SDL_Quit();
-          sceKernelExitGame ();
           return 0;
-#elif defined(PLATFORM_PSVITA)
-          SDL_Quit();
-          sceKernelExitProcess (0);
-          return 0;
-#else
-          BOOL fs = theSetup.GetFullScreen();
-          if (fs) {
-            theSetup.SetFullScreen(!fs);
-            UpdateFullScreen();
-          }
-          _exit(0);
-#endif
           break;
       }
       break;
@@ -319,15 +235,7 @@ int BlockOut::FrameMove()
       if( toSleep>0 ) {
         int elapsed = SDL_GetTicks() - lastSleepTime;
         toSleep -= elapsed;
-#ifdef WINDOWS
-        if(toSleep>0) Sleep(toSleep);
-#else
- #if defined(PLATFORM_PSP) || defined(PLATFORM_PSVITA)
         if(toSleep>0) SDL_Delay(toSleep*1000);
- #else
-        if(toSleep>0) usleep(toSleep*1000);
- #endif
-#endif
         lastSleepTime = SDL_GetTicks();
       }
 
@@ -407,13 +315,7 @@ int BlockOut::OneTimeSceneInit()
 {
 
   if( !theSound.Create() ) {
-#ifdef WINDOWS
-    char message[256];
-	sprintf(message,"Failed to initialize sound manager.\nNo sound will be played.\n%s\n",theSound.GetErrorMsg());
-	MessageBox(NULL,message,"Warning",MB_OK|MB_ICONWARNING);
-#else
-    printf("Failed to initialize sound manager.\nNo sound will be played.\n%s\n",theSound.GetErrorMsg());
-#endif
+
   }
 
   // Init default
@@ -484,14 +386,6 @@ int BlockOut::RestoreDeviceObjects()
     glDisable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
 
-#ifndef PLATFORM_PSVITA
-    //If there was any errors
-    if( glGetError() != GL_NO_ERROR )
-    {
-        return GL_FAIL;    
-    }
-#endif
-
     // Set up device objects
     if( !theMenu.Create(m_screenWidth,m_screenHeight) )
       return GL_FAIL;
@@ -537,7 +431,7 @@ int BlockOut::EventProc(SDL_Event *event)
 
 #if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
   // Handle key presses
-  if( event->type == SDL_KEYDOWN )
+  /*if( event->type == SDL_KEYDOWN )
   {
     int unicode = (event->key.keysym.unicode & 0x7F);
     if( unicode ) {
@@ -545,7 +439,105 @@ int BlockOut::EventProc(SDL_Event *event)
     } else {
       m_bKey[event->key.keysym.sym] = 1;
     }
+  }*/
+  
+	/*while(SDL_PollEvent(&event))
+	{
+	  switch(event.type){
+		case SDL_KEYDOWN:
+		  if(event.key.keysym.sym==SDLK_LEFT)
+			move_left();
+		  break;
+	  }
+	}*/
+
+  switch( event->type)
+  {
+	case SDL_KEYDOWN:
+    switch ( event->key.keysym.sym )
+    {
+      case SDLK_RETURN:
+        m_bKey[SDLK_p] = 1;
+        break;
+      case SDLK_ESCAPE:
+        m_bKey[SDLK_ESCAPE] = 1;
+        break;
+      case SDLK_UP:
+        m_bKey[SDLK_UP] = 1;
+        break;
+      case SDLK_DOWN:
+        m_bKey[SDLK_DOWN] = 1;
+        break;
+      case SDLK_LEFT:
+        m_bKey[SDLK_LEFT] = 1;
+        break;
+      case SDLK_RIGHT:
+        m_bKey[SDLK_RIGHT] = 1;
+        break;
+      case SDLK_LCTRL:
+        m_bKey[SDLK_RETURN] = 1;
+        m_bKey[SDLK_SPACE] = 1;
+        break;
+      case SDLK_LALT:
+	  case SDLK_TAB:
+          m_bKey[SDLK_e] = 1;
+        break;
+      case SDLK_LSHIFT:
+      case SDLK_BACKSPACE:
+          m_bKey[SDLK_w] = 1;
+        break;
+      case SDLK_SPACE:
+          m_bKey[SDLK_q] = 1;
+        break;
+      default:
+        break;
+    }
+	break;
+	case SDL_KEYUP:
+    switch ( event->key.keysym.sym )
+    {
+      case SDLK_RETURN:
+        m_bKey[SDLK_p] = 0;
+        break;
+      case SDLK_ESCAPE:
+        m_bKey[SDLK_ESCAPE] = 0;
+        break;
+      case SDLK_UP:
+        m_bKey[SDLK_UP] = 0;
+        break;
+      case SDLK_DOWN:
+        m_bKey[SDLK_DOWN] = 0;
+        break;
+      case SDLK_LEFT:
+        m_bKey[SDLK_LEFT] = 0;
+        break;
+      case SDLK_RIGHT:
+        m_bKey[SDLK_RIGHT] = 0;
+        break;
+      case SDLK_LCTRL:
+        m_bKey[SDLK_RETURN] = 0;
+        m_bKey[SDLK_SPACE] = 0;
+        break;
+      case SDLK_LALT:
+	  case SDLK_TAB:
+          m_bKey[SDLK_e] = 0;
+        break;
+      case SDLK_LSHIFT:
+      case SDLK_BACKSPACE:
+          m_bKey[SDLK_w] = 0;
+        break;
+      case SDLK_SPACE:
+          m_bKey[SDLK_q] = 0;
+        break;
+      default:
+        break;
+    }
+	break;
   }
+  
+
+  
+  
 #else
   // Handle key presses
   if( event->type == SDL_JOYBUTTONDOWN)

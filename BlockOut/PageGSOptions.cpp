@@ -18,7 +18,7 @@
 #include "Menu.h"
 
 void PageGSOptions::Prepare(int iParam,void *pParam) {
-  nbItem  = 9;
+  nbItem  = 6;
   selItem = 0;
 }
 
@@ -33,7 +33,7 @@ void PageGSOptions::Render() {
     mParent->RenderText(19,0,FALSE,STR("Enabled"));
   else
     mParent->RenderText(19,0,FALSE,STR("Disabled"));
-  mParent->RenderText(0,1,(selItem==1),  STR("FullScreen       :"));
+  /*mParent->RenderText(0,1,(selItem==1),  STR("FullScreen       :"));
   if( mParent->GetSetup()->GetFullScreen() ) {
     mParent->RenderText(19,1,FALSE,STR("Enabled"));
     mParent->RenderText(0,2,(selItem==2),STR("Screen Size      :"));
@@ -48,41 +48,41 @@ void PageGSOptions::Render() {
 #else
   size = mParent->GetSetup()->GetWindowSize();
   mParent->RenderText(19,2,FALSE,(char *)mParent->GetSetup()->GetResName(size));  
-#endif
+#endif*/
 
-  mParent->RenderText(0,3,(selItem==3),STR("Rotation Speed   :"));
-  mParent->RenderText(19,3,FALSE,STR("S[           ]F"));
+  mParent->RenderText(0,1,(selItem==1),STR("Rotation Speed   :"));
+  mParent->RenderText(19,1,FALSE,STR("S[           ]F"));
   int aSpeed = mParent->GetSetup()->GetAnimationSpeed();
   int i;
   for(i=0;i<=aSpeed;i++)
-    mParent->RenderText(21+i,3,TRUE,STR("."));
+    mParent->RenderText(21+i,1,TRUE,STR("."));
   for(;i<=ASPEED_FAST;i++)
-    mParent->RenderText(21+i,3,FALSE,STR("."));
+    mParent->RenderText(21+i,1,FALSE,STR("."));
 
-  mParent->RenderText(0,4,(selItem==4),STR("Transparent face :"));
-  mParent->RenderText(19,4,FALSE,STR("T[           ]O"));
+  mParent->RenderText(0,2,(selItem==2),STR("Transparent face :"));
+  mParent->RenderText(19,2,FALSE,STR("T[           ]O"));
   int fTrans = mParent->GetSetup()->GetTransparentFace();
   for(i=0;i<=fTrans;i++)
-    mParent->RenderText(21+i,4,TRUE,STR("."));
+    mParent->RenderText(21+i,2,TRUE,STR("."));
   for(;i<=FTRANS_MAX;i++)
-    mParent->RenderText(21+i,4,FALSE,STR("."));
+    mParent->RenderText(21+i,2,FALSE,STR("."));
 
-  mParent->RenderText(0,5,(selItem==5),STR("Style            :"));
-  mParent->RenderText(19,5,FALSE,(char *)mParent->GetSetup()->GetStyleName());
+  mParent->RenderText(0,3,(selItem==3),STR("Style            :"));
+  mParent->RenderText(19,3,FALSE,(char *)mParent->GetSetup()->GetStyleName());
 
-  mParent->RenderText(0,6,(selItem==6),STR("Sound preset     :"));
-  mParent->RenderText(19,6,FALSE,(char *)mParent->GetSetup()->GetSoundTypeName());
+  mParent->RenderText(0,4,(selItem==4),STR("Sound preset     :"));
+  mParent->RenderText(19,4,FALSE,(char *)mParent->GetSetup()->GetSoundTypeName());
 
-  mParent->RenderText(0,7,(selItem==7),STR("Frame limiter    :"));
-  mParent->RenderText(19,7,FALSE,(char *)mParent->GetSetup()->GetFrLimitName());
+  /*mParent->RenderText(0,7,(selItem==7),STR("Frame limiter    :"));
+  mParent->RenderText(19,7,FALSE,(char *)mParent->GetSetup()->GetFrLimitName());*/
 
-  mParent->RenderText(0,8,(selItem==8),STR("Line width       :"));
-  mParent->RenderText(19,8,FALSE,STR("T[           ]L"));
+  mParent->RenderText(0,5,(selItem==5),STR("Line width       :"));
+  mParent->RenderText(19,5,FALSE,STR("T[           ]L"));
   int lWidth = mParent->GetSetup()->GetLineWidth();
   for(i=0;i<=lWidth;i++)
-    mParent->RenderText(21+i,8,TRUE,STR("."));
+    mParent->RenderText(21+i,5,TRUE,STR("."));
   for(;i<=FTRANS_MAX;i++)
-    mParent->RenderText(21+i,8,FALSE,STR("."));
+    mParent->RenderText(21+i,5,FALSE,STR("."));
 
 }
 
@@ -119,9 +119,10 @@ int PageGSOptions::Process(BYTE *keys,float fTime) {
     keys[SDLK_RIGHT] = 0;
   }
 
-  if( keys[SDLK_ESCAPE] ) {
+  if( keys[SDLK_ESCAPE] || keys[SDLK_e]) {
      mParent->ToPage(&mParent->mainMenuPage);
      keys[SDLK_ESCAPE] = 0;
+     keys[SDLK_e] = 0;
   }
 
   return exitValue;
@@ -141,38 +142,7 @@ int PageGSOptions::ProcessKey(int key) {
           mParent->GetSound()->PlayBlub();
         }
       break;
-      case 1: // Fullscreen mode
-#if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
-        if( key==SDLK_RIGHT || key==SDLK_LEFT ) {
-          BOOL fs = mParent->GetSetup()->GetFullScreen();
-          mParent->GetSetup()->SetFullScreen(!fs);
-          exitValue = 3; // Update full screen
-        }
-#endif
-      break;
-      case 2: // Window size
-#if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
-        switch( key ) {
-          case SDLK_RIGHT:
-            x = mParent->GetSetup()->GetWindowSize();
-            if( x<RES_1600x1200 )
-              mParent->GetSetup()->SetWindowSize(x+1);
-            else
-              mParent->GetSetup()->SetWindowSize(RES_640x480);
-            exitValue = 2; // Resize
-            break;
-          case SDLK_LEFT:
-            x = mParent->GetSetup()->GetWindowSize();
-            if( x>RES_640x480 )
-              mParent->GetSetup()->SetWindowSize(x-1);
-            else
-              mParent->GetSetup()->SetWindowSize(RES_1600x1200);
-            exitValue = 2; // Resize
-            break;
-        }
-#endif
-      break;
-      case 3: // Rotation speed
+      case 1: // Rotation speed
         switch( key ) {
           case SDLK_RIGHT:
             x = mParent->GetSetup()->GetAnimationSpeed();
@@ -190,7 +160,7 @@ int PageGSOptions::ProcessKey(int key) {
             break;
         }
       break;
-      case 4: // Transparent face
+      case 2: // Transparent face
         switch( key ) {
           case SDLK_RIGHT:
             x = mParent->GetSetup()->GetTransparentFace();
@@ -208,12 +178,12 @@ int PageGSOptions::ProcessKey(int key) {
             break;
         }
       break;
-      case 5: // Game style
+      case 3: // Game style
 #if !defined(PLATFORM_PSP)
         switch( key ) {
           case SDLK_RIGHT:
             x = mParent->GetSetup()->GetStyle();
-            if( x<STYLE_ARCADE )
+            if( x<STYLE_MARBLE )
               mParent->GetSetup()->SetStyle(x+1);
             else
               mParent->GetSetup()->SetStyle(STYLE_CLASSIC);
@@ -223,12 +193,12 @@ int PageGSOptions::ProcessKey(int key) {
             if( x>STYLE_CLASSIC )
               mParent->GetSetup()->SetStyle(x-1);
             else
-              mParent->GetSetup()->SetStyle(STYLE_ARCADE);
+              mParent->GetSetup()->SetStyle(STYLE_MARBLE);
             break;
         }
 #endif
       break;
-      case 6: // Sound preset
+      case 4: // Sound preset
         switch( key ) {
           case SDLK_RIGHT:
             x = mParent->GetSetup()->GetSoundType();
@@ -245,26 +215,8 @@ int PageGSOptions::ProcessKey(int key) {
               mParent->GetSetup()->SetSoundType(SOUND_BLOCKOUT);
             break;
         }
-      break;
-      case 7: // Frame limiter
-        switch( key ) {
-          case SDLK_RIGHT:
-            x = mParent->GetSetup()->GetFrLimiter();
-            if( x<FR_LIMITVSYNC )
-              mParent->GetSetup()->SetFrLimiter(x+1);
-            else
-              mParent->GetSetup()->SetFrLimiter(FR_NOLIMIT);
-            break;
-          case SDLK_LEFT:
-            x = mParent->GetSetup()->GetFrLimiter();
-            if( x>FR_NOLIMIT )
-              mParent->GetSetup()->SetFrLimiter(x-1);
-            else
-              mParent->GetSetup()->SetFrLimiter(FR_LIMITVSYNC);
-            break;
-        }
-      break;      
-      case 8: // Line width
+      break;     
+      case 5: // Line width
         switch( key ) {
           case SDLK_RIGHT:
             x = mParent->GetSetup()->GetLineWidth();

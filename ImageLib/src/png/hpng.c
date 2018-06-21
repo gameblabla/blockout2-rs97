@@ -1,6 +1,10 @@
 #include <malloc.h>
 #include "math.h"
+#ifdef LIBPNG16
+#include <libpng/png.h>
+#else
 #include "png/png.h"
+#endif
 #include "hpng.h"
 
 char PngErrorMessage[1024];
@@ -44,11 +48,14 @@ int LoadPngImage(PNG_IMAGE *d) {
 
 	// ---------------- Error handling
 
+	#ifndef LIBPNG16
 	png_set_error_fn(png,NULL,my_png_error,NULL);
-  if (setjmp(png->jmpbuf)) {
+	if (setjmp(png->jmpbuf)) 
+	{
  	  png_destroy_read_struct(&png, &info, &endinfo);
 	  return 0;
 	}
+	#endif
 
 	// ----------------- Read the image
 
@@ -152,10 +159,14 @@ char *WritePngImage(char *file_name,unsigned long width,unsigned long height,uns
    info_ptr = png_create_info_struct(png_ptr);
    if (info_ptr == NULL)
    {
-    	sprintf(PngErrorMessage,"png_create_info_struct() failed");
-      fclose(fp);
-      png_destroy_write_struct(&png_ptr,  png_infopp_NULL);
-      return PngErrorMessage;
+		sprintf(PngErrorMessage,"png_create_info_struct() failed");
+		fclose(fp);
+		#ifndef LIBPNG16
+		png_destroy_write_struct(&png_ptr,  png_infopp_NULL);
+		#else
+		//png_destroy_write_struct(&png_ptr,  png_infopp);
+		#endif
+		return PngErrorMessage;
    }
 
 	 // ---------------- Error handling

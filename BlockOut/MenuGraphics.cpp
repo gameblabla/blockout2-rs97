@@ -64,8 +64,8 @@ void Menu::InitGraphics() {
   endPos[7] =  v(-0.55f,0.4f,3.0f);
 
   // II
-  startPos[8] =  v( -0.5f,-0.5f,0.0f);
-  endPos[8] =  v(-1.35f,0.4f,3.0f);
+  startPos[8] =  v( -0.3f,-0.5f,0.0f);
+  endPos[8] =  v(-1.15f,0.4f,3.0f);
 
   for(int i=0;i<BLLETTER_NB;i++) {
     isAdded[i] = FALSE;
@@ -122,44 +122,36 @@ int Menu::Create(int width,int height) {
     return GL_FAIL;
 
   // Background
-#ifndef PLATFORM_PSVITA
-  int x1 = fround( (float)width  * 0.13f );
-  int y1 = fround( (float)height * 0.41f );
-  int x2 = fround( (float)width  * 0.87f );
-  int y2 = fround( (float)height * 0.985f );
-#else
   float x1 = width  * 0.13f;
   float y1 = height * 0.41f;
   float x2 = width  * 0.87f;
   float y2 = height;
-#endif
 
-#ifndef PLATFORM_PSP
   if( !background.RestoreDeviceObjects(STR("images/menuback.png"),STR("none"),width,height) )
     return GL_FAIL;
 
-#ifndef PLATFORM_PSVITA
+//#ifndef PLATFORM_PSVITA
   background.UpdateSprite(x1,y1,x2,y2,0.0f,0.0f,1.0f,1.0f);
-#else
+/*#else
   background.UpdateSprite((width  * 0.13f - 480) / 480.0f,
                          (- 544) / 544.0f,
                          (width  * 0.87f - 480) / 480.0f,
                          (height * 0.985f - 544) / 544.0f + 0.03f,
                          0.0f, 0.0f, 1.0f, 1.0f);
-#endif
+#endif*/
 
   if(!background2.RestoreDeviceObjects(STR("images/menucredits.png"),STR("none"),width,height) )
     return GL_FAIL;
 
-#ifndef PLATFORM_PSVITA
+//#ifndef PLATFORM_PSVITA
   background2.UpdateSprite(x1,y1,x2,y2,0.0f,0.0f,1.0f,1.0f);
-#else
+/*#else
   background2.UpdateSprite((x1 - 480) / 480.0f,
                            (y2 - 544) / 544.0f,
                            (x2 - 480) / 480.0f,
                            (- 544) / 544.0f,
                            0.0f,0.0f,1.0f,1.0f);
-#endif
+#endif*/
 
   // Font
   wFont = fround( (float)width  * 0.0205f );
@@ -173,28 +165,7 @@ int Menu::Create(int width,int height) {
   // onLine logo
   if( !onlineLogo.RestoreDeviceObjects(STR("images/online.png"),STR("images/onlinea.png"),width,height) )
     return GL_FAIL;
-#else
-  if( !background.RestoreDeviceObjects(STR("images.psp/menuback.png"),STR("none"),width,height) )
-    return GL_FAIL;
-  background.UpdateSprite(x1,y1,x2,y2,0.0f,0.0f,1.0f,1.0f);
 
-  if(!background2.RestoreDeviceObjects(STR("images.psp/menucredits.png"),STR("none"),width,height) )
-    return GL_FAIL;
-  background2.UpdateSprite(x1,y1,x2,y2,0.0f,0.0f,1.0f,1.0f);
-
-  // Font
-  wFont = fround( (float)width  * 0.0205f );
-  hFont = fround( (float)height * 0.0449f );
-  if( !font.RestoreDeviceObjects(STR("images.psp/menufont.png"),STR("none"),width,height) )
-    return GL_FAIL;
-
-  if(!font2.RestoreDeviceObjects(STR("images.psp/menufont2.png"),STR("none"),width,height))
-    return GL_FAIL;
-
-  // onLine logo
-  if( !onlineLogo.RestoreDeviceObjects(STR("images.psp/online.png"),STR("images.psp/onlinea.png"),width,height) )
-    return GL_FAIL;
-#endif
 
   x1 = fround( 0.148f * (float)width );
   y1 = fround( 0.413f * (float)height );
@@ -476,11 +447,7 @@ void Menu::RenderChar(int x,int y,int w,int h,BOOL selected,char c) {
   }
 
   if( fnt==1 ) {
-#ifndef PLATFORM_PSVITA
     font.UpdateSprite(x,y,x+w,y+h,sX,sY,eX,eY);
-#else
-    font.UpdateSprite((float) (x - 480) / 480.0f, (float) (y - h - 544) / -544.0f - 0.62f, (float) (x  + w - 480) / 480.0f, (float) (y - 544) / -544.0f - 0.62f,  sX,sY,eX,eY);
-#endif
     font.Render();
   } else {
     font2.UpdateSprite(x,y,x+w,y+h,sX,sY,eX,eY);
@@ -577,9 +544,13 @@ void Menu::Render() {
 
   if( animEnded ) {
     if( selPage != &creditsPage )
-      background.Render();
+    {
+      //background.Render();
+    }
     else
+    {
       background2.Render();
+    }
     selPage->Render();
     // Restore full viewport
     glViewport(menuView.x,menuView.y,menuView.width,menuView.height);
@@ -617,7 +588,7 @@ void Menu::ResetAnim(float fTime) {
 }
 
 // ---------------------------------------------------------------------
-
+// Gameblabla
 void Menu::ProcessAnim(float fTime) {
 
   if( startMenuTime==0.0f ) {
@@ -636,7 +607,7 @@ void Menu::ProcessAnim(float fTime) {
 
   for(int i=0;i<BLLETTER_NB;i++) {
 
-    float delay = (float)i * 0.25f; // 250ms delay between letters
+    float delay = (float)i * 0.05f; // 250ms delay between letters
 
     if( mTime < delay ) {
       angle =  0.0f;
@@ -675,9 +646,9 @@ void Menu::ProcessAnim(float fTime) {
 
       float ratio = (mTime-delay)/ANIMTIME;
       angle = PI * ratio;
-      xPos  = startPos[i].x + (endPos[i].x-startPos[i].x) * ratio;
-      yPos  = startPos[i].y + (endPos[i].y-startPos[i].y) * ratio;
-      zPos  = startPos[i].z + (endPos[i].z-startPos[i].z) * ratio;
+      xPos  = startPos[i].x + (endPos[i].x-startPos[i].x) * ratio + 0.1f;
+      yPos  = startPos[i].y + (endPos[i].y-startPos[i].y) * ratio + 0.3f;
+      zPos  = (startPos[i].z + (endPos[i].z-startPos[i].z) * ratio) + 2.0f;
 
     }
 
@@ -852,6 +823,7 @@ int Menu::InitBlLetters() {
   blLetters[8]->AddCube(3,0,0);
   blLetters[8]->AddCube(4,0,0);
   blLetters[8]->AddCube(1,1,0);
+  
   blLetters[8]->AddCube(1,2,0);
   blLetters[8]->AddCube(3,1,0);
   blLetters[8]->AddCube(3,2,0);
@@ -860,6 +832,7 @@ int Menu::InitBlLetters() {
   blLetters[8]->AddCube(2,3,0);
   blLetters[8]->AddCube(3,3,0);
   blLetters[8]->AddCube(4,3,0);
+  
   hr = blLetters[8]->Create(0.1f,org,FALSE);
   if(!hr) return GL_FAIL;
 

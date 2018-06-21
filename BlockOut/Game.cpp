@@ -19,6 +19,8 @@
 #include <time.h>
 #include <ctype.h>
 
+int gameMode;     // Game mode
+
 // Score calculation factors, used by Game::ComputeScore()
 // (coming from measurements made with the original BlockOut game)
 
@@ -56,13 +58,13 @@ const float dropTime = 0.16f;
 // Spark time
 const float sparkTime = 0.5f;
 
-#ifdef PLATFORM_PSVITA
+
 #include <CImage.h>
 #define RGB24_TO_RGB16(r, g, b) \
     ((((r) >> 3) << 11) | (((g) >> 2) << 5) | ((b) >> 3))
 
-BYTE imageBuff[960 * 544 * 3];
-
+//BYTE imageBuff[1024 * 1024 * 3];
+/*
 void Game::LoadBackground(char * path) {
     CImage img;
 
@@ -85,8 +87,7 @@ void Game::LoadBackground(char * path) {
 
     img.Release();
 }
-#endif
-
+*/
 // ---------------------------------------------------------------------
 
 
@@ -184,27 +185,15 @@ int Game::Create(int width,int height) {
     int hr;
     switch(style) {
 #ifndef PLATFORM_PSP
-      #ifndef PLATFORM_PSVITA
-      case STYLE_CLASSIC:
-        hr = background.RestoreDeviceObjects(STR("images/background.png"),STR("none"),width,height);
+     /* case STYLE_CLASSIC:
+        LoadBackground(STR("images/background.png"));
         break;
       case STYLE_MARBLE:
-        hr = background.RestoreDeviceObjects(STR("images/background2.png"),STR("none"),width,height);
+        LoadBackground(STR("images/background2.png"));
         break;
       case STYLE_ARCADE:
-        hr = background.RestoreDeviceObjects(STR("images/background3.png"),STR("none"),width,height);
-        break;
-      #else
-      case STYLE_CLASSIC:
-        LoadBackground(STR("app0:/images.psvita/background.png"));
-        break;
-      case STYLE_MARBLE:
-        LoadBackground(STR("app0:/images.psvita/background2.png"));
-        break;
-      case STYLE_ARCADE:
-        LoadBackground(STR("app0:/images.psvita/background3.png"));
-        break;
-      #endif
+        LoadBackground(STR("images/background3.png"));
+        break;*/
 #else
       case STYLE_CLASSIC:
         hr = background.RestoreDeviceObjects(STR("images.psp/background.png"),STR("none"),width,height);
@@ -218,12 +207,7 @@ int Game::Create(int width,int height) {
 #endif
     }
 
-#ifndef PLATFORM_PSVITA
-    background.UpdateSprite(0,0,width,height,0.0f,0.0f,1.0f,0.75f);
-    if(!hr) return GL_FAIL;
-#else
-    background.UpdateSprite(-1, -1, 1, 1, 0.0f, 0.75f, 1.0f, 0.0f);
-#endif
+    //background.UpdateSprite(-1, -1, 1, 1, 0.0f, 0.75f, 1.0f, 0.0f);
 
     // --------------------------------------------------------------
 
@@ -271,35 +255,34 @@ void Game::Render() {
 
 
     glDisable(GL_DEPTH_TEST);
+   
     glViewport(spriteView.x,spriteView.y,spriteView.width,spriteView.height);
-#if !defined(PLATFORM_PSVITA)
-    background.Render();
-#else
-    unsigned short * fb = (unsigned short *) vglGetFramebuffer();
+    
 
-    for(int y=0;y<544;y++) {
-      for(int x=0;x<960;x++) {
-        fb[x + y*960] = RGB24_TO_RGB16((imageBuff[x*3 + 0 + y*3*960]),
-                                       (imageBuff[x*3 + 1 + y*3*960]),
-                                       (imageBuff[x*3 + 2 + y*3*960]));
+    //background.Render();
+
+    /*unsigned short * fb = (unsigned short *) vglGetFramebuffer();
+    for(int y=0;y<480;y++) {
+      for(int x=0;x<640;x++) {
+        fb[x + y*640] = RGB24_TO_RGB16((imageBuff[x*3 + 0 + y*3*640]),
+                                       (imageBuff[x*3 + 1 + y*3*640]),
+                                       (imageBuff[x*3 + 2 + y*3*640]));
       }
-    }
-#endif
+    }*/
 
-#if defined(PLATFORM_PSVITA)
     glClear( GL_DEPTH_BUFFER_BIT );
-#endif
 
     // Score
     sprites.RenderInfo(highScore,thePit.GetWidth(),thePit.GetHeight(),
                        thePit.GetDepth(),setupManager->GetBlockSet());
 
-#if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
+/*#if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
     thePit.RenderLevel();
-#else
-    sprites.RenderPitLevels(thePit.GetLevel(), thePit.GetDepth(), style);
-#endif
-
+#else*/
+    //sprites.RenderPitLevels(thePit.GetLevel(), thePit.GetDepth(), style);
+//#endif
+	thePit.RenderLevel();
+	
     sprites.RenderScore(score.score,level,score.nbCube);
     if( demoFlag )
       sprites.RenderDemo();
@@ -351,10 +334,6 @@ void Game::Render() {
     pFont->DrawText( 90,  40, botPlayer.GetInfo(&thePit,cubes,nbCube) );
 #endif
 
-#if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
-    RenderPracticeHelp();
-#endif
-
     glViewport(pitView.x,pitView.y,pitView.width,pitView.height);
     if( startShowAI>0.0f ) {
       if( (curTime-startShowAI)>0.75f ) {
@@ -401,7 +380,7 @@ void Game::Render() {
 
 void Game::InvalidateDeviceObjects() {
 
-    background.InvalidateDeviceObjects();
+    //background.InvalidateDeviceObjects();
     spark.InvalidateDeviceObjects();
     thePit.InvalidateDeviceObjects();
     sprites.InvalidateDeviceObjects();

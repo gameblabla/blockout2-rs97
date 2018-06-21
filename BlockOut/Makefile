@@ -40,36 +40,16 @@ OBJ=    BlockOut.o         PageChooseSetup.o       PageStartGame.o \
 #---------------------------------------------------------------------
 
 ADD_LIBS = ../ImageLib/src/libimagelib.a
-
-ifdef _linux64
-SDL_LIBS = /usr/lib/x86_64-linux-gnu
-else
-SDL_LIBS = /usr/lib/i386-linux-gnu
-endif
+SDL_LIBS =
 
 CXX		= g++
 
-ifdef _release
-
-CXXFLAGS =     -O2 -Dlinux -c \
+CXXFLAGS =     -O0 -g -Dlinux -DTINYSDGL -c \
                -I/usr/include/SDL -I../ImageLib/src -I.
 
-LFLAGS   =      -Wl,--strip-all \
-		$(ADD_LIBS) \
+LFLAGS   =  $(ADD_LIBS) \
 		-lSDL_mixer -lSDL -lasound \
-		-lGL -lGLU -lpthread -lm -ldl
-
-else
-
-CXXFLAGS =     -g -D_DEBUG -Dlinux -c \
-               -I/usr/include/SDL -I../ImageLib/src -I.
-
-LFLAGS   =      -L $(SDL_LIBS) \
-		$(ADD_LIBS) \
-		-lSDL_mixer -lSDL -lasound \
-		-lGL -lGLU -lpthread -lm -ldl
-
-endif
+		../VTinyGL/tinygles.a -lpthread -lm -ldl -lpng -lz
 
 
 #--------------------------------------------------------------------

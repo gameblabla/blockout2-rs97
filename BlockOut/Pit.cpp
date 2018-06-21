@@ -1268,13 +1268,8 @@ void Pit::RenderCube(int x,int y,int z) {
   // Enable texture
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D,cubeTexture);
-#ifndef PLATFORM_PSVITA
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-#else
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-#endif
 
   // Draw the cube
   GLApplication::SetMaterial( GetMaterial(z) );
@@ -1346,15 +1341,6 @@ void Pit::RenderLevel() {
      SetPix(i,pitLevelH-2,&gridMaterial);
    }
 
-#if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
-   glRasterPos2i(pitLevelX,pitLevelY+pitLevelH);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-   glEnable(GL_BLEND);
-   glDisable(GL_DEPTH_TEST);
-   glDisable(GL_LIGHTING);
-   glDisable(GL_TEXTURE_2D);
-   glDrawPixels(pitLevelW,pitLevelH,GL_RGBA,GL_FLOAT,pitLevelSurf);
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1478,14 +1464,8 @@ void Pit::Render(BOOL renderCube,BOOL zBuffer) {
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D,backTexture);
 
-#ifndef PLATFORM_PSVITA
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-#else
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-#endif
-
   // Draw the back
   GLApplication::SetMaterial (&backTexMaterial);    
   glCallList(backList);
@@ -1561,7 +1541,7 @@ void Pit::InvalidateDeviceObjects() {
 
 }
 
-#if defined(PLATFORM_PSP) || defined(PLATFORM_PSVITA)
+
 int Pit::GetLevel() {
     int level = 0;
 
@@ -1573,4 +1553,3 @@ int Pit::GetLevel() {
     return level;
 }
 
-#endif

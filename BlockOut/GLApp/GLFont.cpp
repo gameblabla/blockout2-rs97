@@ -37,36 +37,7 @@ int GLFont2D::RestoreDeviceObjects(int scrWidth,int scrHeight) {
 	return 0;
   }
 
-#if !defined(PLATFORM_PSVITA)
-  // Make 32 Bit RGBA buffer
-  fWidth  = img.Width();
-  fHeight = img.Height();
-  BYTE *buff32 = (BYTE *)malloc(fWidth*fHeight*4);
-  BYTE *data   = img.GetData();
-  for(int y=0;y<fHeight;y++) {
-    for(int x=0;x<fWidth;x++) {
-      buff32[x*4 + 0 + y*4*fWidth] = data[x*3+2 + y*3*fWidth];
-      buff32[x*4 + 1 + y*4*fWidth] = data[x*3+1 + y*3*fWidth];
-      buff32[x*4 + 2 + y*4*fWidth] = data[x*3+0 + y*3*fWidth];
-      buff32[x*4 + 3 + y*4*fWidth] = data[x*3+1 + y*3*fWidth]; // Green as alpha
-    }
-  }
 
-  glGenTextures(1,&texId);
-  glBindTexture(GL_TEXTURE_2D,texId);
-
-  glTexImage2D (
-    GL_TEXTURE_2D,       // Type
-    0,                   // No Mipmap
-    4,                   // Format RGBA
-    fWidth,              // Width
-    fHeight,             // Height
-    0,                   // Border
-    GL_RGBA,             // Format RGBA
-    GL_UNSIGNED_BYTE,    // 8 Bit/color
-    buff32               // Data
-  );
-#else
   // Make 32 Bit RGB buffer
   fWidth  = img.Width();
   fHeight = img.Height();
@@ -97,30 +68,16 @@ int GLFont2D::RestoreDeviceObjects(int scrWidth,int scrHeight) {
     GL_UNSIGNED_BYTE,    // 8 Bit/color
     buff32               // Data
   );
-#endif
 
   free(buff32);
   img.Release();
 
-#ifndef PLATFORM_PSVITA
-  if( glGetError() != GL_NO_ERROR )
-  {
-#ifdef WINDOWS
-    char message[256];
-	sprintf(message,"GLFont2D::RestoreDeviceObjects(): Failed to create font texture: glcode=%d\n",glGetError());
-	MessageBox(NULL,message,"ERROR",MB_OK|MB_ICONERROR);
-#else
-    printf("GLFont2D::RestoreDeviceObjects(): Failed to create font texture: glcode=%d\n",glGetError());
-#endif
-    return 0;    
-  }
-#endif
-
-  // Compute othographic matrix (for Transfomed Lit vertex)
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity();
-  glOrtho( 0, scrWidth, scrHeight, 0, -1, 1 );
-  glGetFloatv( GL_PROJECTION_MATRIX , pMatrix );
+	// Compute othographic matrix (for Transfomed Lit vertex)
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity();
+	glOrtho( 0, scrWidth, scrHeight, 0, -1, 1 );
+ 
+	glGetFloatv( GL_PROJECTION_MATRIX , pMatrix );
 
   return 1;
 
@@ -139,7 +96,7 @@ void GLFont2D::InvalidateDeviceObjects() {
 
 void GLFont2D::DrawText(int x,int y,char *text) {
 
-  int lgth = (int)strlen(text);
+	int lgth = (int)strlen(text);
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_LIGHTING);
@@ -148,7 +105,7 @@ void GLFont2D::DrawText(int x,int y,char *text) {
   glBindTexture(GL_TEXTURE_2D,texId);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
   glColor3f(1.0f,1.0f,0.0f);
   glMatrixMode( GL_PROJECTION );
@@ -165,6 +122,11 @@ void GLFont2D::DrawText(int x,int y,char *text) {
     float cH   = 15.0f / (float)fWidth;
 
     glBegin(GL_QUADS);
+    glTexCoord2f(xPos   ,yPos   );glVertex2f((float)(x+9*i)    ,(float)y   );
+    glTexCoord2f(xPos+cW,yPos   );glVertex2f((float)(x+9*(i+1)),(float)y   );
+    glTexCoord2f(xPos+cW,yPos+cH);glVertex2f((float)(x+9*(i+1)),(float)(y+15));
+    glTexCoord2f(xPos   ,yPos+cH);glVertex2f((float)(x+9*i)    ,(float)(y+15));
+    /*
 #ifndef PLATFORM_PSVITA
     glTexCoord2f(xPos   ,yPos   );glVertex2i(x+9*i    ,y   );
     glTexCoord2f(xPos+cW,yPos   );glVertex2i(x+9*(i+1),y   );
@@ -175,7 +137,7 @@ void GLFont2D::DrawText(int x,int y,char *text) {
     glTexCoord2f(xPos+cW,yPos   );glVertex2f((x+9*(i+1) - 480) / 480.0f, (y - 544) / -544.0f);
     glTexCoord2f(xPos+cW,yPos+cH);glVertex2f((x+9*(i+1) - 480) / 480.0f, (y+2*15 - 544) / -544.0f);
     glTexCoord2f(xPos   ,yPos+cH);glVertex2f((x+9*i - 480) / 480.0f,     (y+2*15 - 544) / -544.0f);
-#endif
+#endif*/
     glEnd();
 
   }

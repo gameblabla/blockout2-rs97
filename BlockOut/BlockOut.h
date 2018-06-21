@@ -31,13 +31,11 @@ class BlockOut : public GLApplication
     GLFont2D m_pSmallFont;
 	char extendedTitle[256];
 
-    // Navigation
-    BYTE m_bKey[SDLK_LAST];
 
     // Global mode
-    BOOL inited;
-    int  mode;
+
     int  lastSleepTime;
+    
 
 protected:
     int OneTimeSceneInit();
@@ -47,11 +45,15 @@ protected:
     int FrameMove();
     int EventProc(SDL_Event *event);
 
-    int UpdateFullScreen();
-
 public:
     BlockOut();
 
+	BOOL inited;
+	int  mode;
+	BYTE m_bKey[SDLK_LAST];
+
+
+    int UpdateFullScreen();
     // Global handles
     Game theGame;
     Menu theMenu;

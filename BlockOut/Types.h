@@ -16,10 +16,7 @@
 */
 
 #include "GLApp/GLApp.h"
-
-#if defined(PLATFORM_PSVITA)
 #include "GL/gl.h"
-#endif
 
 #ifndef TYPESH
 #define TYPESH

@@ -3,21 +3,8 @@
 // Jean-Luc PONS (2007)
 // -------------------------------------------
 
-#if defined(PLATFORM_PSP)
-#include "SDL/SDL.h"
-#include "SDL/SDL_opengl.h"
-#elif defined(PLATFORM_PSVITA)
-#include "SDL/SDL.h"
-#include <psp2/kernel/processmgr.h>
-#include <psp2shell.h>
-#ifdef PSVITA_DEBUG
-#define printf(...) psp2shell_print(__VA_ARGS__)
-#endif
-#include "GL/gl.h"
-#else
 #include <SDL.h>
-#include <SDL_opengl.h>
-#endif
+#include "GL/gl.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -38,11 +25,7 @@ typedef unsigned int  DWORD;
 #define FALSE 0
 #define TRUE  1
 
-#if defined(PLATFORM_PSVITA)
 #define DELETE_LIST(l) if(l) { l=0; }
-#else
-#define DELETE_LIST(l) if(l) { glDeleteLists(l,1); l=0; }
-#endif
 
 #define DELETE_TEX(t)  if(t) { glDeleteTextures(1,&t);t=0; }
 

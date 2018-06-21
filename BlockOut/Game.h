@@ -15,6 +15,11 @@
   GNU General Public License for more details.
 */
 
+#ifndef GAME_H_
+#define GAME_H_
+
+#pragma once
+
 #include <math.h>
 #include "GLApp/GLApp.h"
 #include "GLApp/GLSprite.h"
@@ -25,20 +30,9 @@
 #include "SetupManager.h"
 #include "SoundManager.h"
 
-#ifdef PLATFORM_PSVITA
-
-#ifdef TINYSDGL
 #include "GL/gl.h"
-#endif
 
-#include <psp2shell.h>
-#include <psp2/kernel/processmgr.h>
-
-#ifdef PSVITA_DEBUG
-#define printf(...) psp2shell_print(__VA_ARGS__)
-#endif
-
-#endif
+extern int gameMode;
 
 class Game {
 
@@ -79,7 +73,6 @@ class Game {
     // Set view matrix
     void SetViewMatrix(GLfloat *mView);
 
-
     GLFont2D *pFont;
 
   private:
@@ -103,7 +96,6 @@ class Game {
     SCOREREC score;     // Score
     int   level;        // Current level
     int   highScore;    // High score of the current game setup
-    int   gameMode;     // Game mode
     int   pIdx;         // Current polycube index (in the allPolyCube array)
     int   exitValue;    // Go back to menu when 1
     int   cubePerLevel; // Number of cube per level
@@ -206,7 +198,8 @@ class Game {
     void StartSpark(BLOCKITEM *pos);
     void RenderPracticeHelp();
     void ComputeHelp();
-#ifdef PLATFORM_PSVITA
     void LoadBackground(char * path);
-#endif
 };
+
+
+#endif

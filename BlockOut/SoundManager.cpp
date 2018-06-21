@@ -39,17 +39,14 @@ SoundManager::SoundManager() {
   empty2Sound = NULL;
   creditsMusic = NULL;
   hitSound = NULL;
-  strcpy(errMsg,"");
-
 }
 
 // ------------------------------------------------
 
 int SoundManager::Create() {
 
-  if ( Mix_OpenAudio (44100, AUDIO_S16, 2, 512) < 0 )
+  if ( Mix_OpenAudio (48000, AUDIO_S16SYS, 2, 2048) < 0 )
   {
-    sprintf(errMsg, "SDL_mixer: Audio initialisation error");
     enabled=FALSE;
     return FALSE;
   }
@@ -86,19 +83,11 @@ int SoundManager::InitSound(char *fileName,Mix_Chunk **snd) {
 
   *snd = Mix_LoadWAV ( fileName );
   if( *snd == NULL ) {
-    sprintf(errMsg, "Failed to initialise %s : %s",fileName,SDL_GetError());
   }
   return ( *snd != NULL );
 
 }
 
-// ------------------------------------------------
-
-char *SoundManager::GetErrorMsg() {
-
-  return errMsg;
-
-}
 
 // ------------------------------------------------
 
@@ -168,4 +157,22 @@ void SoundManager::StopMusic() {
     creditsMusic = NULL;
   }
   
+}
+
+void SoundManager::CleanEverything()
+{
+	StopMusic();
+	if (blubSound) Mix_FreeChunk(blubSound);
+	if (wozzSound) Mix_FreeChunk(wozzSound);
+	if (tchhSound) Mix_FreeChunk(tchhSound);
+	if (lineSound) Mix_FreeChunk(lineSound);
+	if (levelSound) Mix_FreeChunk(levelSound);
+	if (wellDoneSound) Mix_FreeChunk(wellDoneSound);
+	if (emptySound) Mix_FreeChunk(emptySound);
+	if (line2Sound) Mix_FreeChunk(line2Sound);
+	if (level2Sound) Mix_FreeChunk(level2Sound);
+	if (wellDone2Sound) Mix_FreeChunk(wellDone2Sound);
+	if (empty2Sound) Mix_FreeChunk(empty2Sound);
+	if (hitSound) Mix_FreeChunk(hitSound);
+	Mix_CloseAudio();
 }

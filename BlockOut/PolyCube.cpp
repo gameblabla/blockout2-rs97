@@ -811,26 +811,6 @@ void PolyCube::Render(BOOL redMode) {
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_TEXTURE_2D);
 
-#ifndef PLATFORM_PSVITA
-  if( hasGhost ) {
-
-    // Alpha texture
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-    GLApplication::SetMaterial(&ghostMaterial);
-
-    // Draw back face first
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glCallList(ghostList);
-
-    // Draw front face
-    glCullFace(GL_BACK);
-    glCallList(ghostList);
-
-  }
-#endif
-
   glDisable(GL_TEXTURE_2D);
   glDisable(GL_LIGHTING);
   glDisable(GL_BLEND);

@@ -23,9 +23,7 @@
 #define GRID_WIDTH   70
 #define GRID_HEIGHT  50
 
-#if defined(PLATFORM_PSVITA)
 #include "GL/gl.h"
-#endif
 
 class MenuGrid {
 

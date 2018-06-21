@@ -51,7 +51,7 @@ int CImage::LoadImage(char *FileName) {
   }
 
   // Load GIF image
-  if( strcasecmp(ext,"gif")==0 ) {
+  /*if( strcasecmp(ext,"gif")==0 ) {
 
     GIF_IMAGE img;
 	int  Length;
@@ -78,10 +78,10 @@ int CImage::LoadImage(char *FileName) {
 
 	return 1;
       
-  }
+  }*/
 
   // Load JPG image
-  if( strcasecmp(ext,"jpg")==0 || strcasecmp(ext,"jpeg")==0 ) {
+  /*if( strcasecmp(ext,"jpg")==0 || strcasecmp(ext,"jpeg")==0 ) {
 
     JPEG_IMAGE img;
 
@@ -97,7 +97,7 @@ int CImage::LoadImage(char *FileName) {
 
 	return 1;
       
-  }
+  }*/
 
   // Load PNG image
   if( strcasecmp(ext,"png")==0 ) {

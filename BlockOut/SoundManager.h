@@ -52,17 +52,18 @@ class SoundManager {
     // Demo music
     void PlayMusic();
     void StopMusic();
-
-    // Get error message
-    char *GetErrorMsg();
-
+    
     // Enable/Disable sound
     void SetEnable(BOOL enable);
-
+    
+	void CleanEverything();
+	void DisposeObject()
+	{
+		delete this;
+	}
   private:
     int InitSound(char *fileName,Mix_Chunk **snd);
 
-    char errMsg[1024];
     BOOL enabled;
 
     Mix_Chunk*       blubSound;

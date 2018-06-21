@@ -18,16 +18,16 @@
 #include "Menu.h"
 
 void PageOptions::Prepare(int iParam,void *pParam) {
-  nbItem  = 3;
+  nbItem  = 2;
   selItem = 0;
 }
 
 void PageOptions::Render() {
   
   mParent->RenderTitle(STR("OPTIONS"));
-  mParent->RenderText(0,0,(selItem==0),STR("Controls          "));
-  mParent->RenderText(0,1,(selItem==1),STR("Graphics & Sound  "));
-  mParent->RenderText(0,2,(selItem==2),STR("HTTP              "));
+  //mParent->RenderText(0,0,(selItem==0),STR("Controls          "));
+  mParent->RenderText(0,0,(selItem==0),STR("Graphics & Sound  "));
+  mParent->RenderText(0,1,(selItem==1),STR("HTTP              "));
 
 }
 
@@ -37,23 +37,25 @@ int PageOptions::Process(BYTE *keys,float fTime) {
 
   if( keys[SDLK_RETURN] ) {
     switch( selItem ) {
-      case 0: // Controls
+      /*case 0: // Controls
         mParent->ToPage(&mParent->controlsPage);
-        break;
-      case 1: // Graphics and Sound
+        break;*/
+      case 0: // Graphics and Sound
         mParent->ToPage(&mParent->gsOptionsPage);
         break;
-      case 2: // HTTP
+      case 1: // HTTP
         mParent->ToPage(&mParent->httpPage);
         break;
     }
     keys[SDLK_RETURN] = 0;
   }
 
-  if( keys[SDLK_ESCAPE] ) {
+  if( keys[SDLK_ESCAPE] || keys[SDLK_e] ) {
      mParent->ToPage(&mParent->mainMenuPage);
      keys[SDLK_ESCAPE] = 0;
+     keys[SDLK_e] = 0;
   }
+
 
   return 0;
 }

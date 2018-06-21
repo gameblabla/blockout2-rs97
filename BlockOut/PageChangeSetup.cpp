@@ -72,9 +72,10 @@ int PageChangeSetup::Process(BYTE *keys,float fTime) {
     keys[SDLK_RIGHT] = 0;
   }
 
-  if( keys[SDLK_ESCAPE] ) {
+  if( keys[SDLK_ESCAPE] || keys[SDLK_e]) {
      mParent->ToPage(&mParent->mainMenuPage);
      keys[SDLK_ESCAPE] = 0;
+     keys[SDLK_e] = 0;
   }
 
   return 0;

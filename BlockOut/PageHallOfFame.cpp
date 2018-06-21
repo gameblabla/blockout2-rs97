@@ -89,9 +89,10 @@ int PageHallOfFame::Process(BYTE *keys,float fTime) {
       keys[SDLK_RETURN] = 0;
     }
 
-    if( keys[SDLK_ESCAPE] ) {
+    if( keys[SDLK_ESCAPE] || keys[SDLK_e]) {
        mParent->ToPage(&mParent->mainMenuPage);
        keys[SDLK_ESCAPE] = 0;
+       keys[SDLK_e] = 0;
     }
 
   } else {
@@ -104,41 +105,7 @@ int PageHallOfFame::Process(BYTE *keys,float fTime) {
 
 // ---------------------------------------------------------------------
 
-#if !defined(PLATFORM_PSP) && !defined(PLATFORM_PSVITA)
-void PageHallOfFame::ProcessEdit(BYTE *keys,float fTime) {
 
-  if( startEditTime == 0.0f )
-    startEditTime = fTime;
-
-  editCursor = ( (fround((startEditTime - fTime) * 2.0f)%2) == 0 );
-
-  char c = GetChar(keys);
-  if( c>0 && editPos<10 ) {
-    editText[editPos] = c;
-    editPos++;
-  }
-
-  // Delete
-  if( keys[SDLK_DELETE] || keys[SDLK_LEFT] || keys[SDLK_BACKSPACE] ) {
-    if( editPos>0 ) editPos--;
-    if( editPos<10 ) editText[editPos]=' ';
-    keys[SDLK_DELETE] = 0;
-    keys[SDLK_LEFT] = 0;
-    keys[SDLK_BACKSPACE] = 0;
-  }
-
-  if( keys[SDLK_ESCAPE] || keys[SDLK_RETURN] ) {
-    // Record new name and save
-    strcpy(editScore->name,editText);
-    mParent->GetSetup()->SaveHighScore();
-    mParent->GetSetup()->GetHighScore(allScore);
-    editMode = FALSE;
-    keys[SDLK_ESCAPE] = 0;
-    keys[SDLK_RETURN] = 0;
-  }
-
-}
-#else
 void PageHallOfFame::ProcessEdit(BYTE *keys,float fTime) {
 
   if( startEditTime == 0.0f )
@@ -181,4 +148,3 @@ void PageHallOfFame::ProcessEdit(BYTE *keys,float fTime) {
   }
 
 }
-#endif

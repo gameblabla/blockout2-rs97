@@ -45,11 +45,8 @@
 
 static char bl2Home[512];
 static char usrHome[512];
-
-#if defined(PLATFORM_PSP) || defined(PLATFORM_PSVITA)
 char chracters[] = "abcdefghijklmnoprstuwz0123456789 ";
 static char letter = 0;
-#endif
 
 //-----------------------------------------------------------------------------
 // Name: v()
@@ -370,18 +367,7 @@ int CreateTexture(int width,int height,char *imgName,GLuint *hmap) {
   img.Release();
   free(buff32);
 
-#if !defined(PLATFORM_PSVITA)
-  if( glGetError() != GL_NO_ERROR ) {
-#ifdef WINDOWS
-    char message[256];
-	sprintf(message,"CreateTexture(): OpenGL error (code=%d)\n",glGetError());
-	MessageBox(NULL,message,"ERROR",MB_OK|MB_ICONERROR);
-#else
-    printf( "CreateTexture(): OpenGL error (code=%d)\n",glGetError() );
-#endif
-    return GL_FAIL;
-  }
-#endif
+
   return GL_OK;
 }
 
@@ -390,7 +376,7 @@ int CreateTexture(int width,int height,char *imgName,GLuint *hmap) {
 // Reset memory to 0
 //-----------------------------------------------------------------------------
 void ZeroMemory(void *buff,int size) {
-  memset(buff,0,size);
+  if (buff) memset(buff,0,size);
 }
 #endif
 
@@ -472,7 +458,7 @@ extern char GetChar(BYTE *keys) {
   // ';'
   if( keys[';'] ) retChar = ';';
 
-#if defined(PLATFORM_PSP) || defined(PLATFORM_PSVITA)
+
   if ( keys[SDLK_RIGHT] ) {
     letter = 0;
   }
@@ -496,7 +482,6 @@ extern char GetChar(BYTE *keys) {
     keys[SDLK_DOWN] = 0;
     retChar = chracters[letter];
   }
-#endif
 
   // Reset keys
   for(BYTE i='A';i<='Z';i++)
