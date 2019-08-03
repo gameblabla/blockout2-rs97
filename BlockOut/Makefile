@@ -44,7 +44,7 @@ SDL_LIBS =
 
 CXX		= g++
 
-CXXFLAGS =     -O0 -g -Dlinux -DTINYSDGL -c \
+CXXFLAGS =     -O0 -g -Dlinux -DTINYSDGL -c -DRS97 \
                -I/usr/include/SDL -I../ImageLib/src -I.
 
 LFLAGS   =  $(ADD_LIBS) \

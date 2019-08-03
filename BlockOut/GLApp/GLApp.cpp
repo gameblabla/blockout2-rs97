@@ -32,7 +32,7 @@ GLApplication::GLApplication() {
 #elif defined(PLATFORM_PSVITA)
   m_screenWidth = 960;
   m_screenHeight = 544;
-#elif defined(RS97)
+#elif defined(PLATFORM_ARCADEMINI)
   m_screenWidth = 320;
   m_screenHeight = 480;
 #else

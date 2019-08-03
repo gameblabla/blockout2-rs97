@@ -82,12 +82,8 @@ const int setupId[] = {
     581,583,584 };
 
 const char *BLOCKSET_NAME[]    = { "FLAT" , "BASIC" , "EXTENDED" };
-const char *RESOLUTION_NAME[]  = { "320x480" , "320x480" , "320x480" , "320x480" , "320x480" };
-#ifdef RS97
-const POINT2D RESOLUTION_VALUE[] = { {320,480} , {320,480} , {320,480} , {320,480} , {320,480} };
-#else
+const char *RESOLUTION_NAME[]  = { "320x240" , "320x240" , "320x240" , "320x240" , "320x240" };
 const POINT2D RESOLUTION_VALUE[] = { {320,240} , {320,240} , {320,240} , {320,240} , {320,240} };
-#endif
 const char *STYLE_NAME[] = { "Nostalgia" , "Marble"};
 const char *SOUND_NAME[] = { "Blockout II" , "Blockout" };
 const char *FRLIMITER_NAME[] = { "Off" , "50 fps", "60 fps", "75 fps", "100 fps" , "VSync" };
