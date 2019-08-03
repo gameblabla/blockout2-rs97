@@ -8,12 +8,12 @@ SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
 SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
 AR = $(CROSS_COMPILE)ar
 RANLIB = $(CROSS_COMPILE)ranlib
-CFLAGS = -std=gnu99 -Iutil -Isrc -Iinclude -O2 -mips32 -mno-mips16 $(SDL_CFLAGS) -lSDL
+CFLAGS = -std=gnu99 -Iutil -Isrc -Iinclude -Ofast -mips32 -mno-mips16 $(SDL_CFLAGS) 
 CXXFLAGS = $(CFLAGS)
 OUTPUT = tinygles_rs97.a
 
 OBJS = ./src/api.o  ./src/get.o     ./src/list.o      ./src/vertex.o   ./src/zline.o ./src/vgl.o \
-	./src/arrays.o  ./src/glx.o         ./src/matrix.o       ./src/oscontext.o  ./src/zmath.o \
+	./src/arrays.o   ./src/matrix.o       ./src/oscontext.o  ./src/zmath.o \
 	./src/clear.o   ./src/image_util.o  ./src/memory.o       ./src/select.o     ./src/ztriangle.o \
 	./src/clip.o    ./src/init.o        ./src/misc.o         ./src/specbuf.o    ./src/zbuffer.o \
 	./src/error.o   ./src/light.o       ./src/msghandling.o  ./src/texture.o    ./src/zdither.o ./src/blend.o

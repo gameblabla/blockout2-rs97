@@ -1,8 +1,8 @@
 #ifndef GLX_H
 #define GLX_H
-
+/*
 #include <X11/Xlib.h>
-#include <X11/Xutil.h>
+#include <X11/Xutil.h>*/
 #include <GL/gl.h>
 
 
